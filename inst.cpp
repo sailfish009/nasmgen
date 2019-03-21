@@ -1,5 +1,42 @@
 #include "inst.hpp"
 
+#include <stdio.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <tchar.h>
+#define _vsprintf_s vsprintf_s
+
+int vasprintf(char** strp, const char* fmt, va_list ap) 
+{
+  // _vscprintf tells you how big the buffer needs to be
+  int len = _vscprintf(fmt, ap);
+  if (len == -1) {
+    return -1;
+  }
+  size_t size = (size_t)len + 1;
+  char* str = (char*)malloc(size);
+  if (!str) {
+    return -1;
+  }
+  // _vsprintf_s is the "secure" version of vsprintf
+  int r = _vsprintf_s(str, len + 1, fmt, ap);
+  if (r == -1) {
+    free(str);
+    return -1;
+  }
+  *strp = str;
+  return r;
+}
+
+int asprintf(char **strp, const char *fmt, ...) 
+{
+  va_list ap;
+  va_start(ap, fmt);
+  int r = vasprintf(strp, fmt, ap);
+  va_end(ap);
+  return r;
+}
+
 
 Inst::Inst(type_t t): suff(NULL), type(t) {
 }
@@ -15,7 +52,7 @@ bool Inst::is(type_t t) const {
 
 
 const char* Inst::suffix() const {
-	return suff ?: "";
+	return suff ? suff: "";
 }
 
 
@@ -149,7 +186,7 @@ InstNoop::InstNoop(): Inst(NOOP) {
 }
 
 
-InstAsm::InstAsm(const char* a): Inst(ASM), asmstr(strdup(a?:"")) {
+InstAsm::InstAsm(const char* a): Inst(ASM), asmstr(strdup(a? a:"")) {
 	unless (asmstr && *asmstr) { cln(); throw __LINE__; }
 }
 InstAsm::~InstAsm() {
@@ -184,7 +221,7 @@ void InstExt::cln() {
 }
 
 
-InstStr::InstStr(Token* t, Token* name, const char* s): Inst(STR), type(t), id(name), str(strdup(s?:"")) {
+InstStr::InstStr(Token* t, Token* name, const char* s): Inst(STR), type(t), id(name), str(strdup(s? s:"")) {
 	unless (type && type->is(Token::TOK_TYPE_PTR)) { cln(); throw __LINE__; }
 	unless (id && id->vartype() == Token::TOK_VAR_ID) { cln(); throw __LINE__; }
 	unless (str && *str) { cln(); throw __LINE__; }

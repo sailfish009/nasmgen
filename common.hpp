@@ -18,7 +18,8 @@
 
 #define likely(x)   __builtin_expect(!!(x), 1)
 #define unlikely(x) __builtin_expect(!!(x), 0)
-#define unless(x) if (unlikely(!(x)))
+// #define unless(x) if (unlikely(!(x)))
+#define unless(x) if ((!(x)))
 
 
 #define MAX(a, b) (((a)>(b))?(a):(b));

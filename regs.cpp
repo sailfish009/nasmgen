@@ -1,7 +1,9 @@
 #include "regs.hpp"
 
 
-Reg::Reg(const reg_info_t i): reg_info(i), val((reg_val_t){0, false, false, WIDTH_8, WIDTH_8}) {
+// Reg::Reg(const reg_info_t i): reg_info(i), val((reg_val_t){0, false, false, WIDTH_8, WIDTH_8}) 
+Reg::Reg(const reg_info_t i): reg_info(i), val{0, false, false, WIDTH_8, WIDTH_8} 
+{
 }
 
 
@@ -92,24 +94,25 @@ void Reg::set(width_t wi) {
 }
 
 
-Regs::Regs(): regs((Reg[]){
-		Reg((Reg::reg_info_t){ REG_A,  {"AL",   "AX",   "EAX",  "RAX"}, false, true  }),
-		Reg((Reg::reg_info_t){ REG_B,  {"BL",   "BX",   "EBX",  "RBX"}, true , true  }),
-		Reg((Reg::reg_info_t){ REG_C,  {"CL",   "CX",   "ECX",  "RCX"}, false, true  }),
-		Reg((Reg::reg_info_t){ REG_D,  {"DL",   "DX",   "EDX",  "RDX"}, false, false }),
-		Reg((Reg::reg_info_t){ REG_SI, {"SIL",  "SI",   "ESI",  "RSI"}, false, true  }),
-		Reg((Reg::reg_info_t){ REG_DI, {"DIL",  "DI",   "EDI",  "RDI"}, false, true  }),
-		Reg((Reg::reg_info_t){ REG_BP, {"BPL",  "BP",   "EBP",  "RBP"}, true , true  }),
-		Reg((Reg::reg_info_t){ REG_SP, {"SPL",  "SP",   "ESP",  "RSP"}, false, false }),
-		Reg((Reg::reg_info_t){ REG_8,  {"R8B",  "R8W",  "R8D",  "R8" }, false, true  }),
-		Reg((Reg::reg_info_t){ REG_9,  {"R9B",  "R9W",  "R9D",  "R9" }, false, true  }),
-		Reg((Reg::reg_info_t){ REG_10, {"R10B", "R10W", "R10D", "R10"}, false, true  }),
-		Reg((Reg::reg_info_t){ REG_11, {"R11B", "R11W", "R11D", "R11"}, false, true  }),
-		Reg((Reg::reg_info_t){ REG_12, {"R12B", "R12W", "R12D", "R12"}, true , true  }),
-		Reg((Reg::reg_info_t){ REG_13, {"R13B", "R13W", "R13D", "R13"}, true , true  }),
-		Reg((Reg::reg_info_t){ REG_14, {"R14B", "R14W", "R14D", "R14"}, true , true  }),
-		Reg((Reg::reg_info_t){ REG_15, {"R15B", "R15W", "R15D", "R15"}, true , true  })
-	}) {
+Regs::Regs(): regs
+  {
+		Reg(Reg::reg_info_t{ REG_A,  {"AL",   "AX",   "EAX",  "RAX"}, false, true  }),
+		Reg(Reg::reg_info_t{ REG_B,  {"BL",   "BX",   "EBX",  "RBX"}, true , true  }),
+		Reg(Reg::reg_info_t{ REG_C,  {"CL",   "CX",   "ECX",  "RCX"}, false, true  }),
+		Reg(Reg::reg_info_t{ REG_D,  {"DL",   "DX",   "EDX",  "RDX"}, false, false }),
+		Reg(Reg::reg_info_t{ REG_SI, {"SIL",  "SI",   "ESI",  "RSI"}, false, true  }),
+		Reg(Reg::reg_info_t{ REG_DI, {"DIL",  "DI",   "EDI",  "RDI"}, false, true  }),
+		Reg(Reg::reg_info_t{ REG_BP, {"BPL",  "BP",   "EBP",  "RBP"}, true , true  }),
+		Reg(Reg::reg_info_t{ REG_SP, {"SPL",  "SP",   "ESP",  "RSP"}, false, false }),
+		Reg(Reg::reg_info_t{ REG_8,  {"R8B",  "R8W",  "R8D",  "R8" }, false, true  }),
+		Reg(Reg::reg_info_t{ REG_9,  {"R9B",  "R9W",  "R9D",  "R9" }, false, true  }),
+		Reg(Reg::reg_info_t{ REG_10, {"R10B", "R10W", "R10D", "R10"}, false, true  }),
+		Reg(Reg::reg_info_t{ REG_11, {"R11B", "R11W", "R11D", "R11"}, false, true  }),
+		Reg(Reg::reg_info_t{ REG_12, {"R12B", "R12W", "R12D", "R12"}, true , true  }),
+		Reg(Reg::reg_info_t{ REG_13, {"R13B", "R13W", "R13D", "R13"}, true , true  }),
+		Reg(Reg::reg_info_t{ REG_14, {"R14B", "R14W", "R14D", "R14"}, true , true  }),
+		Reg(Reg::reg_info_t{ REG_15, {"R15B", "R15W", "R15D", "R15"}, true , true  })
+	} {
 }
 
 
@@ -122,7 +125,7 @@ Regs::~Regs() {
 
 bool Regs::push_lbl(unsigned id, width_t size, bool needs_deref, const char* lbl) { // buf
 	char* dlbl = strdup(lbl);
-	Reg* r = new Reg((Reg::reg_info_t){ REG_NONE, {dlbl, dlbl, dlbl, dlbl}, false, false });
+	Reg* r = new Reg(Reg::reg_info_t{ REG_NONE, {dlbl, dlbl, dlbl, dlbl}, false, false });
 	const char* needs_push = NULL;
 	r->set(id, size, needs_deref, needs_push);
 	assert(!needs_push);

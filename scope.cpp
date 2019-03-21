@@ -1,5 +1,16 @@
 #include "scope.hpp"
+#include <string.h>
 
+char *strndup(const char *s, size_t n)
+{
+    char* newstr = (char*)malloc(n+1);
+    if (newstr) 
+    {
+      strncpy(newstr, s, n);
+      newstr[n] = '\0';
+    }
+    return newstr;
+}
 
 unsigned Scope::num = 0;
 
@@ -31,7 +42,7 @@ unsigned Scope::push(const char* v) {
 unsigned Scope::push(const char* v, size_t l) {
 	if (find(v, l)) return 0;
 	unsigned id = ++num;
-	vars.push_back((var_t){strndup(v, l), id});
+	vars.push_back(var_t{strndup(v, l), id});
 	return id;
 }
 
